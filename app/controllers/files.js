@@ -12,6 +12,12 @@ const index = (req, res, next) => {
     .catch(err => next(err));
 };
 
+const show = (req, res, next) => {
+  File.findById(req.params.id)
+    .then(file => file ? res.json({ file }) : next())
+    .catch(err => next(err));
+};
+
 const update = (req, res, next) => {
   let search = { _id: req.params.id, _owner: req.currentUser._id };
   File.findOne(search)
