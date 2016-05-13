@@ -7,6 +7,20 @@ const File = models.file;
 const authenticate = require('./concerns/authenticate');
 
 
+const update = (req, res, next) => {
+  let search = { _id: req.params.id, _owner: req.currentUser._id };
+  File.findOne(search)
+    .then(file => {
+      if (!file) {
+        return next();
+      }
+
+      delete req.body._owner;  // disallow owner reassignment.
+      return file.update(req.body.file)
+        .then(() => res.sendStatus(200));
+    })
+    .catch(err => next(err));
+};
 
 const destroy = (req, res, next) => {
   let search = { _id: req.params.id, _owner: req.currentUser._id };
@@ -24,6 +38,7 @@ const destroy = (req, res, next) => {
 
 
 module.exports = controller({
+  update,
   destroy,
 },
 { before: [
