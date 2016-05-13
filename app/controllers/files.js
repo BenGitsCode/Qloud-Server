@@ -6,6 +6,11 @@ const File = models.file;
 
 const authenticate = require('./concerns/authenticate');
 
+const index = (req, res, next) => {
+  File.find()
+    .then(files => res.json({ files }))
+    .catch(err => next(err));
+};
 
 const update = (req, res, next) => {
   let search = { _id: req.params.id, _owner: req.currentUser._id };
@@ -38,6 +43,7 @@ const destroy = (req, res, next) => {
 
 
 module.exports = controller({
+  index,
   update,
   destroy,
 },
