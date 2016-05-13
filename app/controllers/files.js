@@ -18,6 +18,15 @@ const show = (req, res, next) => {
     .catch(err => next(err));
 };
 
+const create = (req, res, next) => {
+  let file = Object.assign(req.body.file, {
+    _owner: req.currentUser._id,
+  });
+  File.create(file)
+    .then(file => res.json({ file }))
+    .catch(err => next(err));
+};
+
 const update = (req, res, next) => {
   let search = { _id: req.params.id, _owner: req.currentUser._id };
   File.findOne(search)
@@ -50,6 +59,8 @@ const destroy = (req, res, next) => {
 
 module.exports = controller({
   index,
+  show,
+  create,
   update,
   destroy,
 },
