@@ -6,6 +6,20 @@ const File = models.file;
 
 const authenticate = require('./concerns/authenticate');
 
+const middleware = require('app/middleware');
+const multer = middleware.multer;
+
+const awsS3Upload = require('lib/aws-s3-upload');
+
+const mime = require('mime-types');
+const path = require('path');
+
+const extension = (mimetype, filename) =>
+  mime.extension(mimetype) ||
+  (!/\/x-/.test(mimetype) && mimetype.replace('/', '/x-')) ||
+  path.extname(filename).replace(/^./, '');
+
+
 const index = (req, res, next) => {
   File.find()
     .then(files => res.json({ files }))
@@ -18,14 +32,39 @@ const show = (req, res, next) => {
     .catch(err => next(err));
 };
 
+// const create = (req, res, next) => {
+//   let file = Object.assign(req.body.file, {
+//     _owner: req.currentUser._id,
+//   });
+//   File.create(file)
+//     .then(file => res.json({ file }))
+//     .catch(err => next(err));
+// };
+
 const create = (req, res, next) => {
-  let file = Object.assign(req.body.file, {
-    _owner: req.currentUser._id,
-  });
-  File.create(file)
-    .then(file => res.json({ file }))
-    .catch(err => next(err));
+  let file = {
+    mime: req.file.mimetype,
+    data: req.file.buffer,
+    ext: extension(req.file.mimetype, req.file.originalname),
+  };
+  awsS3Upload(file)
+  .then((s3response) => {
+    let file = {
+      location: s3response.Location,
+      _owner: req.currentUser._id,
+      name: req.body.file.name,
+      tags: [],
+      // TODO: add path here
+  };
+    return File.create(file);
+  })
+  .then((file) => {
+    res.status(201).json({ file });
+  })
+  .catch(err => next(err));
+
 };
+
 
 const update = (req, res, next) => {
   let search = { _id: req.params.id, _owner: req.currentUser._id };
@@ -65,7 +104,8 @@ module.exports = controller({
   destroy,
 },
 { before: [
-  { method: authenticate },
+  { method: authenticate  },
+  { method: multer.single('file[file]'), only: ['create'] },
 ]
 
  });
