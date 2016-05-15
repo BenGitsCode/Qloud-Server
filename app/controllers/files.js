@@ -52,9 +52,9 @@ const create = (req, res, next) => {
     let file = {
       location: s3response.Location,
       _owner: req.currentUser._id,
-      name: req.body.file.name,
+      name: req.file.originalname,
       tags: [],
-      // TODO: add path here
+      path: ',Home,'// TODO: make dynamic rather than hard code
   };
     return File.create(file);
   })
