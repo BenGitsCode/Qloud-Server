@@ -9,9 +9,6 @@ const folderSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  tags: {
-    type: Array
-  },
   path: {
     type: String
   },
