@@ -9,12 +9,15 @@ const fileSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  // file tags
   tags: {
     type: Array
   },
+  // materialized path for virtual file system
   path: {
     type: String
   },
+  // URL for file on amazon s3
   location: {
     type: String
   },
