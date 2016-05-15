@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 
 const exampleSchema = new mongoose.Schema({
-  text: {
+  title: {
     type: String,
     required: true,
   },
@@ -13,7 +13,11 @@ const exampleSchema = new mongoose.Schema({
     required: true,
   },
 }, {
-  timestamps: true,
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  },
+
   toJSON: { virtuals: true },
 });
 
