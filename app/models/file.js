@@ -15,6 +15,9 @@ const fileSchema = new mongoose.Schema({
   path: {
     type: String
   },
+  location: {
+    type: String
+  },
 },
 {
   timestamps: {
