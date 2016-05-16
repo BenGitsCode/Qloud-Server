@@ -13,7 +13,7 @@ module.exports = require('lib/wiring/routes')
 .resources('folders')
 
 // custom routes for file system navigation
-.get('home', 'folders#home')
+.get('/home', 'folders#home')
 
 // users of the app have special requirements
 .post('/sign-up', 'users#signup')
