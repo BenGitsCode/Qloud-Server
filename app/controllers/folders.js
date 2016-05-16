@@ -7,13 +7,19 @@ const Folder = models.folder;
 const authenticate = require('./concerns/authenticate');
 
 const index = (req, res, next) => {
-  Folder.find()
+  Folder.find({ _owner: req.currentUser._id })
     .then(folders => res.json({ folders }))
     .catch(err => next(err));
 };
 
 const show = (req, res, next) => {
   Folder.findById(req.params.id)
+    .then(folder => folder ? res.json({ folder }) : next())
+    .catch(err => next(err));
+};
+
+const home = (req, res, next) => {
+  Folder.findOne({ _owner: req.currentUser._id, path: null })
     .then(folder => folder ? res.json({ folder }) : next())
     .catch(err => next(err));
 };
@@ -63,6 +69,7 @@ module.exports = controller({
   create,
   update,
   destroy,
+  home
 },
 { before: [
   { method: authenticate },

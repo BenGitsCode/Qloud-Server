@@ -21,7 +21,7 @@ const extension = (mimetype, filename) =>
 
 
 const index = (req, res, next) => {
-  File.find()
+  File.find({ _owner: req.currentUser._id })
     .then(files => res.json({ files }))
     .catch(err => next(err));
 };
@@ -31,15 +31,6 @@ const show = (req, res, next) => {
     .then(file => file ? res.json({ file }) : next())
     .catch(err => next(err));
 };
-
-// const create = (req, res, next) => {
-//   let file = Object.assign(req.body.file, {
-//     _owner: req.currentUser._id,
-//   });
-//   File.create(file)
-//     .then(file => res.json({ file }))
-//     .catch(err => next(err));
-// };
 
 const create = (req, res, next) => {
   let file = {
