@@ -13,13 +13,8 @@ const index = (req, res, next) => {
 };
 
 const show = (req, res, next) => {
-  Folder.findById(req.params.id)
-    .then(folder => folder ? res.json({ folder }) : next())
-    .catch(err => next(err));
-};
-
-const home = (req, res, next) => {
-  Folder.findOne({ _owner: req.currentUser._id, path: null })
+  let inputPath = new RegExp(`${req.body.folder.path}$`);
+  Folder.find({ path : inputPath })
     .then(folder => folder ? res.json({ folder }) : next())
     .catch(err => next(err));
 };
@@ -69,7 +64,6 @@ module.exports = controller({
   create,
   update,
   destroy,
-  home
 },
 { before: [
   { method: authenticate },
