@@ -7,7 +7,7 @@ const Folder = models.folder;
 const authenticate = require('./concerns/authenticate');
 
 const index = (req, res, next) => {
-  Folder.find()
+  Folder.find({ _owner: req.currentUser._id })
     .then(folders => res.json({ folders }))
     .catch(err => next(err));
 };
