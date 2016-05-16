@@ -18,6 +18,12 @@ const show = (req, res, next) => {
     .catch(err => next(err));
 };
 
+const home = (req, res, next) => {
+  Folder.findOne({ _owner: req.currentUser._id, path: null })
+    .then(folder => folder ? res.json({ folder }) : next())
+    .catch(err => next(err));
+};
+
 const create = (req, res, next) => {
   let folder = Object.assign(req.body.folder, {
     _owner: req.currentUser._id,
@@ -63,6 +69,7 @@ module.exports = controller({
   create,
   update,
   destroy,
+  home
 },
 { before: [
   { method: authenticate },
