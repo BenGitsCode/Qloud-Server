@@ -14,10 +14,10 @@ const awsS3Upload = require('lib/aws-s3-upload');
 const mime = require('mime-types');
 const path = require('path');
 
-const extension = (mimetype, nodename) =>
+const extension = (mimetype, filename) =>
   mime.extension(mimetype) ||
   (!/\/x-/.test(mimetype) && mimetype.replace('/', '/x-')) ||
-  path.extname(nodename).replace(/^./, '');
+  path.extname(filename).replace(/^./, '');
 
 
 const index = (req, res, next) => {
@@ -37,28 +37,28 @@ const show = (req, res, next) => {
 };
 
 const createFile = (req, res, next) => {
-  let node = {
-    mime: req.node.mimetype,
-    data: req.node.buffer,
-    ext: extension(req.node.mimetype, req.node.originalname),
-  };
-  awsS3Upload(node)
-  .then((s3response) => {
-    let node = {
-      location: s3response.Location,
-      _owner: req.currentUser._id,
-      name: req.node.originalname,
-      tags: [],
-      type: "file",
-      path: req.body.node.path // specify path to file in request body
-  };
-    return Node.create(node);
-  })
-  .then((node) => {
-    res.status(201).json({ node });
-  })
-  .catch(err => next(err));
-
+//   let node = {
+//     mime: req.node.mimetype,
+//     data: req.node.buffer,
+//     ext: extension(req.node.mimetype, req.node.originalname),
+//   };
+//   awsS3Upload(node)
+//   .then((s3response) => {
+//     let node = {
+//       location: s3response.Location,
+//       _owner: req.currentUser._id,
+//       name: req.node.originalname,
+//       tags: [],
+//       type: "file",
+//       path: req.body.node.path // specify path to file in request body
+//   };
+//     return Node.create(node);
+//   })
+//   .then((node) => {
+//     res.status(201).json({ node });
+//   })
+//   .catch(err => next(err));
+//
 };
 
 const createFolder = (req, res, next) => {
