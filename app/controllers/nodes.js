@@ -46,7 +46,7 @@ const createFile = (req, res, next) => {
       _owner: req.currentUser._id,
       name: req.node.originalname,
       tags: [],
-      path: req.body.path// TODO: make dynamic rather than hard code
+      path: req.body.node.path // specify path to file in request body
   };
     return Node.create(node);
   })
@@ -60,6 +60,7 @@ const createFile = (req, res, next) => {
 const createFolder = (req, res, next) => {
   let node = Object.assign(req.body.node, {
     _owner: req.currentUser._id,
+    path: req.body.node.path
   });
   Node.create(node)
     .then(node => res.json({ node }))
