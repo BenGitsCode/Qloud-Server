@@ -37,8 +37,8 @@ const show = (req, res, next) => {
     Node.find({
         path: findPath
       })
-      .then(node => node ? res.json({
-        node
+      .then(nodes => nodes ? res.json({
+        nodes
       }) : next())
       .catch(err => next(err));
   } else {
@@ -55,8 +55,8 @@ const show = (req, res, next) => {
       .then(findPath => Node.find({
         path: findPath
       }))
-      .then(node => node ? res.json({
-        node
+      .then(nodes => nodes ? res.json({
+        nodes
       }) : next())
       .catch(err => next(err))
       .catch(err => next(err));
