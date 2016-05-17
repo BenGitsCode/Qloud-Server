@@ -12,6 +12,8 @@ module.exports = require('lib/wiring/routes')
 .resources('files')
 .resources('folders')
 
+.post('/nodes/create-file', 'nodes#createFile')
+.post('/nodes/create-folder', 'nodes#createFolder')
 // custom routes for file system navigation
 .post('/folders/test', 'folders#show')
 .post('/files/test', 'files#show')
