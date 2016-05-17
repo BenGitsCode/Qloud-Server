@@ -12,9 +12,14 @@ module.exports = require('lib/wiring/routes')
 .resources('files')
 .resources('folders')
 
+.delete('/nodes/:id', 'nodes#destroy')
+.patch('/nodes/:id', 'nodes#update')
+.get('/nodes', 'nodes#index')
+.get('/nodes/:id', 'nodes#show')
 .post('/nodes/create-file', 'nodes#createFile')
 .post('/nodes/create-folder', 'nodes#createFolder')
 // custom routes for file system navigation
+.post('/nodes/test', 'nodes#show')
 .post('/folders/test', 'folders#show')
 .post('/files/test', 'files#show')
 // users of the app have special requirements
