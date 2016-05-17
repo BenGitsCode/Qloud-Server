@@ -3,6 +3,7 @@
 const controller = require('lib/wiring/controller');
 const models = require('app/models');
 const File = models.file;
+const Node = models.node;
 
 const authenticate = require('./concerns/authenticate');
 
@@ -46,9 +47,10 @@ const create = (req, res, next) => {
       _owner: req.currentUser._id,
       name: req.file.originalname,
       tags: [],
-      path: ',Home,'// TODO: make dynamic rather than hard code
+      type: "file",
+      path: ",home,"// TODO: make dynamic rather than hard code
   };
-    return File.create(file);
+    return Node.create(file);
   })
   .then((file) => {
     res.status(201).json({ file });
