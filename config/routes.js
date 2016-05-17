@@ -14,6 +14,7 @@ module.exports = require('lib/wiring/routes')
 
 // custom routes for file system navigation
 .post('/folders/test', 'folders#show')
+.post('/files/test', 'files#show')
 // users of the app have special requirements
 .post('/sign-up', 'users#signup')
 .post('/sign-in', 'users#signin')
