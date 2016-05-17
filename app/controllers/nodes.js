@@ -72,6 +72,22 @@ const createFolder = (req, res, next) => {
     .catch(err => next(err));
 };
 
+// const update = (req, res, next) => {
+//   let search = { _id: req.params.id, _owner: req.currentUser._id };
+//   Node.findOne(search)
+//     .then(node => {
+//       if (!node) {
+//         return next();
+//       }
+//       delete req.body._id; // remove id so it is not altered
+//       delete req.body._owner;  // disallow owner reassignment.
+//       return node.update(req.body);
+//       // return node.update(req.body.node);
+//     })
+//     .then(() => res.sendStatus(200))
+//     .catch(err => next(err));
+// };
+
 const update = (req, res, next) => {
   let search = { _id: req.params.id, _owner: req.currentUser._id };
   Node.findOne(search)
