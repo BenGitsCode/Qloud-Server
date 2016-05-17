@@ -26,10 +26,13 @@ const index = (req, res, next) => {
     .catch(err => next(err));
 };
 
+// we'll need to change this to use ids
 const show = (req, res, next) => {
-  let inputPath = new RegExp(`${req.body.node.path}$`);
-  Node.find({ path : inputPath })
-    .then(node => node ? res.json({ node }) : next())
+  Node.findOne({ _id : req.params.id })
+    .then(node => new RegExp(`,${node.name},$`)) //
+    .then(findPath => Node.find({path: findPath}))
+                      .then(node => node ? res.json({ node }) : next())
+                      .catch(err => next(err))
     .catch(err => next(err));
 };
 
@@ -46,6 +49,7 @@ const createFile = (req, res, next) => {
       _owner: req.currentUser._id,
       name: req.node.originalname,
       tags: [],
+      type: "file",
       path: req.body.node.path // specify path to file in request body
   };
     return Node.create(node);
@@ -60,7 +64,8 @@ const createFile = (req, res, next) => {
 const createFolder = (req, res, next) => {
   let node = Object.assign(req.body.node, {
     _owner: req.currentUser._id,
-    path: req.body.node.path
+    path: req.body.node.path,
+    type: "folder"
   });
   Node.create(node)
     .then(node => res.json({ node }))
