@@ -48,7 +48,7 @@ const create = (req, res, next) => {
       name: req.file.originalname,
       tags: [],
       type: "file",
-      path: ",home,"// TODO: make dynamic rather than hard code
+      path: req.body.path //TODO: make dynamic rather than hard code
   };
     return Node.create(file);
   })
