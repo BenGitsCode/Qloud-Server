@@ -27,7 +27,8 @@ const index = (req, res, next) => {
 };
 
 const show = (req, res, next) => {
-  File.findById(req.params.id)
+  let inputPath = new RegExp(`${req.body.file.path}$`);
+  File.find({ path : inputPath })
     .then(file => file ? res.json({ file }) : next())
     .catch(err => next(err));
 };
