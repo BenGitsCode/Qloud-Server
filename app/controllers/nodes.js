@@ -31,6 +31,38 @@ const index = (req, res, next) => {
 };
 
 // we'll need to change this to use ids
+// const show = (req, res, next) => {
+//   if (req.params.id === "home") {
+//     let findPath = new RegExp(`,home,$`);
+//     Node.find({
+//         path: findPath
+//       })
+//       .then(nodes => nodes ? res.json({
+//         nodes
+//       }) : next())
+//       .catch(err => next(err));
+//   } else {
+//     Node.findOne({
+//         _id: req.params.id
+//       })
+//       .then(node => {
+//         if (req.params.id === "home") {
+//           return new RegExp(`,home,$`);
+//         } else {
+//           return new RegExp(`,${node.name},$`);
+//         }
+//       }) //
+//       .then(findPath => Node.find({
+//         path: findPath
+//       }))
+//       .then(nodes => nodes ? res.json({
+//         nodes
+//       }) : next())
+//       .catch(err => next(err))
+//       .catch(err => next(err));
+//   }
+// };
+
 const show = (req, res, next) => {
   if (req.params.id === "home") {
     let findPath = new RegExp(`,home,$`);
@@ -61,31 +93,39 @@ const show = (req, res, next) => {
       .catch(err => next(err))
       .catch(err => next(err));
   }
+  let findPath = new RegExp(`,${req.params.id},$`);
+  Node.find({
+      path: findPath
+    })
+    .then(nodes => nodes ? res.json({
+      nodes
+    }) : next())
+    .catch(err => next(err));
 };
 
 const createFile = (req, res, next) => {
-//   let node = {
-//     mime: req.node.mimetype,
-//     data: req.node.buffer,
-//     ext: extension(req.node.mimetype, req.node.originalname),
-//   };
-//   awsS3Upload(node)
-//   .then((s3response) => {
-//     let node = {
-//       location: s3response.Location,
-//       _owner: req.currentUser._id,
-//       name: req.node.originalname,
-//       tags: [],
-//       type: "file",
-//       path: req.body.node.path // specify path to file in request body
-//   };
-//     return Node.create(node);
-//   })
-//   .then((node) => {
-//     res.status(201).json({ node });
-//   })
-//   .catch(err => next(err));
-//
+  //   let node = {
+  //     mime: req.node.mimetype,
+  //     data: req.node.buffer,
+  //     ext: extension(req.node.mimetype, req.node.originalname),
+  //   };
+  //   awsS3Upload(node)
+  //   .then((s3response) => {
+  //     let node = {
+  //       location: s3response.Location,
+  //       _owner: req.currentUser._id,
+  //       name: req.node.originalname,
+  //       tags: [],
+  //       type: "file",
+  //       path: req.body.node.path // specify path to file in request body
+  //   };
+  //     return Node.create(node);
+  //   })
+  //   .then((node) => {
+  //     res.status(201).json({ node });
+  //   })
+  //   .catch(err => next(err));
+  //
   let node = {
     mime: req.node.mimetype,
     data: req.node.buffer,
@@ -146,16 +186,14 @@ const update = (req, res, next) => {
     _id: req.params.id,
     _owner: req.currentUser._id
   };
+
   Node.findOne(search)
     .then(node => {
-      if (!node) {
-        return next();
-      }
-
-      delete req.body._owner; // disallow owner reassignment.
-      return node.update(req.body.node)
-        .then(() => res.sendStatus(200));
+      if (!node) { return next(); }
+      if (!req.body.node.tags) { return next(); }
+      return node.update({$push: {tags: req.body.node.tags}});
     })
+    .then(() => res.sendStatus(200))
     .catch(err => next(err));
 };
 
