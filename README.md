@@ -4,6 +4,14 @@
 
 An API to upload files to. It allows users to add/edit tags to to their files, and organizes the files with a folders-based filesystem.
 
+## THESE ARE BACK END README REQUIREMENTS DELETE AFTER USING
+
+A short description of your application.
+A catalog of routes (paths and methods) that the API expects.
+A link to the deployed back-end app.
+A link to the repo for your front-end.
+
+
 
 The API *INSERT NOTES HERE*
 
