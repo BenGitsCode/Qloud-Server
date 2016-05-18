@@ -63,46 +63,6 @@ const index = (req, res, next) => {
 //   }
 // };
 
-// const show = (req, res, next) => {
-//   if (req.params.id === "home") {
-//     let findPath = new RegExp(`,home,$`);
-//     Node.find({
-//         path: findPath
-//       })
-//       .then(nodes => nodes ? res.json({
-//         nodes
-//       }) : next())
-//       .catch(err => next(err));
-//   } else {
-//     Node.findOne({
-//         _id: req.params.id
-//       })
-//       .then(node => {
-//         if (req.params.id === "home") {
-//           return new RegExp(`,home,$`);
-//         } else {
-//           return new RegExp(`,${node.name},$`);
-//         }
-//       }) //
-//       .then(findPath => Node.find({
-//         path: findPath
-//       }))
-//       .then(nodes => nodes ? res.json({
-//         nodes
-//       }) : next())
-//       .catch(err => next(err))
-//       .catch(err => next(err));
-//   }
-//   let findPath = new RegExp(`,${req.params.id},$`);
-//   Node.find({
-//       path: findPath
-//     })
-//     .then(nodes => nodes ? res.json({
-//       nodes
-//     }) : next())
-//     .catch(err => next(err));
-// };
-
 const show = (req, res, next) => {
   let findPath = new RegExp(`,${req.params.id.toLowerCase()},$`);
   Node.find({
@@ -114,36 +74,6 @@ const show = (req, res, next) => {
     }) : next())
     .catch(err => next(err));
 };
-  // if (req.params.id === "home") {
-  //   let findPath = new RegExp(`,home,$`);
-  //   Node.find({
-  //       path: findPath
-  //     })
-  //     .then(nodes => nodes ? res.json({
-  //       nodes
-  //     }) : next())
-  //     .catch(err => next(err));
-  // } else {
-  //   Node.findOne({
-  //       _id: req.params.id
-  //     })
-  //     .then(node => {
-  //       if (req.params.id === "home") {
-  //         return new RegExp(`,home,$`);
-  //       } else {
-  //         return new RegExp(`,${node.name},$`);
-  //       }
-  //     }) //
-  //     .then(findPath => Node.find({
-  //       path: findPath
-  //     }))
-  //     .then(nodes => nodes ? res.json({
-  //       nodes
-  //     }) : next())
-  //     .catch(err => next(err))
-  //     .catch(err => next(err));
-  // }
-// };
 
 const createFile = (req, res, next) => {
   let file = {
@@ -152,23 +82,21 @@ const createFile = (req, res, next) => {
     ext: extension(req.file.mimetype, req.file.originalname),
   };
   awsS3Upload(file)
-    .then((s3response) => {
-      let file = {
-        location: s3response.Location,
-        _owner: req.currentUser._id,
-        name: req.file.originalname,
-        tags: [],
-        type: "file",
-        path: req.body.node.path.toLowerCase()
-      };
-      return Node.create(file);
-    })
-    .then((file) => {
-      res.status(201).json({
-        file
-      });
-    })
-    .catch(err => next(err));
+  .then((s3response) => {
+    let file = {
+      location: s3response.Location,
+      _owner: req.currentUser._id,
+      name: req.file.originalname,
+      tags: [],
+      type: "file",
+      path: req.body.path
+  };
+    return Node.create(file);
+  })
+  .then((file) => {
+    res.status(201).json({ file });
+  })
+  .catch(err => next(err));
 };
 
 const createFolder = (req, res, next) => {
@@ -231,12 +159,12 @@ module.exports = controller({
   update,
   destroy,
   createFolder,
-  createFile
+  createFile,
 }, {
   before: [{
     method: authenticate
   }, {
-    method: multer.single('node[node]'),
+    method: multer.single('node[file]'),
     only: ['create']
   }, ]
 
