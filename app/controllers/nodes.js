@@ -89,7 +89,7 @@ const createFile = (req, res, next) => {
       name: req.file.originalname,
       tags: [],
       type: "file",
-      path: req.body.path
+      path: req.body.path.toLowerCase()
   };
     return Node.create(file);
   })
