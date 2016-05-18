@@ -106,7 +106,8 @@ const index = (req, res, next) => {
 const show = (req, res, next) => {
   let findPath = new RegExp(`,${req.params.id.toLowerCase()},$`);
   Node.find({
-      path: findPath
+      path: findPath,
+      _owner: req.currentUser._id
     })
     .then(nodes => nodes ? res.json({
       nodes
