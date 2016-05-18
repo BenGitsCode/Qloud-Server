@@ -31,131 +31,179 @@ const index = (req, res, next) => {
 };
 
 // we'll need to change this to use ids
+// const show = (req, res, next) => {
+//   if (req.params.id === "home") {
+//     let findPath = new RegExp(`,home,$`);
+//     Node.find({
+//         path: findPath
+//       })
+//       .then(nodes => nodes ? res.json({
+//         nodes
+//       }) : next())
+//       .catch(err => next(err));
+//   } else {
+//     Node.findOne({
+//         _id: req.params.id
+//       })
+//       .then(node => {
+//         if (req.params.id === "home") {
+//           return new RegExp(`,home,$`);
+//         } else {
+//           return new RegExp(`,${node.name},$`);
+//         }
+//       }) //
+//       .then(findPath => Node.find({
+//         path: findPath
+//       }))
+//       .then(nodes => nodes ? res.json({
+//         nodes
+//       }) : next())
+//       .catch(err => next(err))
+//       .catch(err => next(err));
+//   }
+// };
+
+// const show = (req, res, next) => {
+//   if (req.params.id === "home") {
+//     let findPath = new RegExp(`,home,$`);
+//     Node.find({
+//         path: findPath
+//       })
+//       .then(nodes => nodes ? res.json({
+//         nodes
+//       }) : next())
+//       .catch(err => next(err));
+//   } else {
+//     Node.findOne({
+//         _id: req.params.id
+//       })
+//       .then(node => {
+//         if (req.params.id === "home") {
+//           return new RegExp(`,home,$`);
+//         } else {
+//           return new RegExp(`,${node.name},$`);
+//         }
+//       }) //
+//       .then(findPath => Node.find({
+//         path: findPath
+//       }))
+//       .then(nodes => nodes ? res.json({
+//         nodes
+//       }) : next())
+//       .catch(err => next(err))
+//       .catch(err => next(err));
+//   }
+//   let findPath = new RegExp(`,${req.params.id},$`);
+//   Node.find({
+//       path: findPath
+//     })
+//     .then(nodes => nodes ? res.json({
+//       nodes
+//     }) : next())
+//     .catch(err => next(err));
+// };
+
 const show = (req, res, next) => {
-  if (req.params.id === "home") {
-    let findPath = new RegExp(`,home,$`);
-    Node.find({
-        path: findPath
-      })
-      .then(nodes => nodes ? res.json({
-        nodes
-      }) : next())
-      .catch(err => next(err));
-  } else {
-    Node.findOne({
-        _id: req.params.id
-      })
-      .then(node => {
-        if (req.params.id === "home") {
-          return new RegExp(`,home,$`);
-        } else {
-          return new RegExp(`,${node.name},$`);
-        }
-      }) //
-      .then(findPath => Node.find({
-        path: findPath
-      }))
-      .then(nodes => nodes ? res.json({
-        nodes
-      }) : next())
-      .catch(err => next(err))
-      .catch(err => next(err));
-  }
+  let findPath = new RegExp(`,${req.params.id.toLowerCase()},$`);
+  Node.find({
+      path: findPath
+    })
+    .then(nodes => nodes ? res.json({
+      nodes
+    }) : next())
+    .catch(err => next(err));
 };
+  // if (req.params.id === "home") {
+  //   let findPath = new RegExp(`,home,$`);
+  //   Node.find({
+  //       path: findPath
+  //     })
+  //     .then(nodes => nodes ? res.json({
+  //       nodes
+  //     }) : next())
+  //     .catch(err => next(err));
+  // } else {
+  //   Node.findOne({
+  //       _id: req.params.id
+  //     })
+  //     .then(node => {
+  //       if (req.params.id === "home") {
+  //         return new RegExp(`,home,$`);
+  //       } else {
+  //         return new RegExp(`,${node.name},$`);
+  //       }
+  //     }) //
+  //     .then(findPath => Node.find({
+  //       path: findPath
+  //     }))
+  //     .then(nodes => nodes ? res.json({
+  //       nodes
+  //     }) : next())
+  //     .catch(err => next(err))
+  //     .catch(err => next(err));
+  // }
+// };
 
 const createFile = (req, res, next) => {
-//   let node = {
-//     mime: req.node.mimetype,
-//     data: req.node.buffer,
-//     ext: extension(req.node.mimetype, req.node.originalname),
-//   };
-//   awsS3Upload(node)
-//   .then((s3response) => {
-//     let node = {
-//       location: s3response.Location,
-//       _owner: req.currentUser._id,
-//       name: req.node.originalname,
-//       tags: [],
-//       type: "file",
-//       path: req.body.node.path // specify path to file in request body
-//   };
-//     return Node.create(node);
-//   })
-//   .then((node) => {
-//     res.status(201).json({ node });
-//   })
-//   .catch(err => next(err));
-//
-  let node = {
-    mime: req.node.mimetype,
-    data: req.node.buffer,
-    ext: extension(req.node.mimetype, req.node.originalname),
+  let file = {
+    mime: req.file.mimetype,
+    data: req.file.buffer,
+    ext: extension(req.file.mimetype, req.file.originalname),
   };
-  awsS3Upload(node)
+  awsS3Upload(file)
     .then((s3response) => {
-      let node = {
+      let file = {
         location: s3response.Location,
         _owner: req.currentUser._id,
-        name: req.node.originalname,
+        name: req.file.originalname,
         tags: [],
         type: "file",
-        path: req.body.node.path // specify path to file in request body
+        path: req.body.node.path.toLowerCase()
       };
-      return Node.create(node);
+      return Node.create(file);
     })
-    .then((node) => {
+    .then((file) => {
       res.status(201).json({
-        node
+        file
       });
     })
     .catch(err => next(err));
-
 };
 
 const createFolder = (req, res, next) => {
   let node = Object.assign(req.body.node, {
     _owner: req.currentUser._id,
-    path: req.body.node.path,
+    path: req.body.node.path.toLowerCase(),
     type: "folder"
   });
   Node.create(node)
-    .then(node => res.json({
+    .then(node => res.status(201).json({
       node
     }))
     .catch(err => next(err));
 };
-
-// const update = (req, res, next) => {
-//   let search = { _id: req.params.id, _owner: req.currentUser._id };
-//   Node.findOne(search)
-//     .then(node => {
-//       if (!node) {
-//         return next();
-//       }
-//       delete req.body._id; // remove id so it is not altered
-//       delete req.body._owner;  // disallow owner reassignment.
-//       return node.update(req.body);
-//       // return node.update(req.body.node);
-//     })
-//     .then(() => res.sendStatus(200))
-//     .catch(err => next(err));
-// };
 
 const update = (req, res, next) => {
   let search = {
     _id: req.params.id,
     _owner: req.currentUser._id
   };
+
   Node.findOne(search)
     .then(node => {
       if (!node) {
         return next();
       }
-
-      delete req.body._owner; // disallow owner reassignment.
-      return node.update(req.body.node)
-        .then(() => res.sendStatus(200));
+      if (!req.body.node.tags) {
+        return next();
+      }
+      return node.update({
+        $push: {
+          tags: req.body.node.tags
+        }
+      });
     })
+    .then(() => res.sendStatus(200))
     .catch(err => next(err));
 };
 
@@ -169,7 +217,6 @@ const destroy = (req, res, next) => {
       if (!node) {
         return next();
       }
-
       return node.remove()
         .then(() => res.sendStatus(200));
     })
