@@ -113,6 +113,36 @@ const show = (req, res, next) => {
     }) : next())
     .catch(err => next(err));
 };
+  // if (req.params.id === "home") {
+  //   let findPath = new RegExp(`,home,$`);
+  //   Node.find({
+  //       path: findPath
+  //     })
+  //     .then(nodes => nodes ? res.json({
+  //       nodes
+  //     }) : next())
+  //     .catch(err => next(err));
+  // } else {
+  //   Node.findOne({
+  //       _id: req.params.id
+  //     })
+  //     .then(node => {
+  //       if (req.params.id === "home") {
+  //         return new RegExp(`,home,$`);
+  //       } else {
+  //         return new RegExp(`,${node.name},$`);
+  //       }
+  //     }) //
+  //     .then(findPath => Node.find({
+  //       path: findPath
+  //     }))
+  //     .then(nodes => nodes ? res.json({
+  //       nodes
+  //     }) : next())
+  //     .catch(err => next(err))
+  //     .catch(err => next(err));
+  // }
+// };
 
 const createFile = (req, res, next) => {
   let file = {
