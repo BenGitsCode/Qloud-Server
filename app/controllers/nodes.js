@@ -165,7 +165,7 @@ module.exports = controller({
     method: authenticate
   }, {
     method: multer.single('node[file]'),
-    only: ['create']
+    only: ['createFile']
   }, ]
 
 });
