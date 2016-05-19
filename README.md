@@ -7,13 +7,6 @@ belong to users along with the location of the files on a remote cloud storage
 server, specifically, Amazon S3. It allows users to add tags to to their
 files, and organizes the files with a folders-based filesystem.
 
-## THESE ARE BACK END README REQUIREMENTS DELETE AFTER USING
-
-A link to the deployed back-end app.
-A link to the repo for your front-end.
-
-The API *INSERT NOTES HERE*
-
 ## API end-points
 
 | Verb   | URI Pattern            | Controller#Action    |
